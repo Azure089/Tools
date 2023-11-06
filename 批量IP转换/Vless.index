@@ -1,0 +1,63 @@
+<!DOCTYPE html>
+<html>
+<head>
+<title>IP Replace Tool</title>
+<style>
+textarea {
+width: 1000px;  
+height: 110px;
+}
+</style>
+</head>
+
+<body>
+
+<h1>Vless节点批量替换IP工具</h1>
+<h4>使用说明：
+支持Vless，导入Vless分享订阅，添加需要批量替换的IP或域名地址，Replace得到替换后结果。
+</h4>
+
+
+<p>请输入原始订阅:</p>
+<textarea id="original">vless://76b6c9ec-93d7-4388-a3e7-c712d1a77025@172.16.16.16:443?encryption=none&security=tls&sni=abcdef.top&fp=chrome&type=ws&host=abcdef.top&path=%2Fqwerty#USA</textarea>
+
+<p>请输入替换IP或域名:</p>       
+<textarea id="ips">103.21.244.0
+103.22.200.0
+103.31.4.0
+abc.com
+104.24.0.0</textarea>
+
+<button onclick="replaceIPs()">Replace</button>
+
+<p>替换结果:</p>
+<textarea id="result" readonly></textarea>
+
+<button onclick="copyResult()">COPY</button>
+
+<script>
+function replaceIPs() {
+  var original = document.getElementById("original").value;
+  
+  var ipsRaw = document.getElementById("ips").value;
+  var ips = [...new Set(ipsRaw.trim().split("\n").filter(ip => /^((25[0-5]|2[0-4][0-9]|1[0-9][0-9]|[1-9]?[0-9])\.){3}(25[0-5]|2[0-4][0-9]|1[0-9][0-9]|[1-9]?[0-9])|^([a-zA-Z0-9]([a-zA-Z0-9-]{0,61}[a-zA-Z0-9])?\.)+[a-zA-Z]{2,6}$/.test(ip)))];
+
+  var result = "";
+
+  ips.forEach(function(ip) {
+   var replaced = original.replace(new RegExp("(?<=@)[^:/?#]+(?=:)","g"), ip);
+   result += replaced + "\n";
+  });
+
+  document.getElementById("result").value = result;
+}
+
+function copyResult() {
+  var resultTxt = document.getElementById("result");
+  resultTxt.select();
+  document.execCommand("copy");
+}
+</script>
+
+</body>
+</html>
